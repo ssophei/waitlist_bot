@@ -1,5 +1,8 @@
 name: Run Waitlist Bot
 
+permissions:
+  contents: write
+
 # sends every 10 min
 on:
   push:
