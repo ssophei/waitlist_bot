@@ -46,6 +46,8 @@ Edit `courses.json` and add each course you want to track:
 ```
 The bot will run automatically after each push and every 10 minutes to check for open waitlist spots.
 
+ **Note:** GitHub Actions schedules are not exact. Runs occur on fixed UTC intervals (`:00, :10, :20, ...`) and may be delayed by a few minutes. If needed, you can manually trigger the bot from the **Actions** tab using `workflow_dispatch`.
+
 ## How it Works
 
 The bot runs automatically through GitHub Actions. It checks the course URLs in `courses.json`. If a course has an open waitlist spot, it sends an email alert to `TO_EMAIL`.
