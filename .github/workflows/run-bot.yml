@@ -1,0 +1,46 @@
+name: Run Waitlist Bot
+
+# sends every 10 min
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          pip install -r requirements.txt
+          playwright install
+
+      - name: Run bot
+        env:
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+          EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
+          TO_EMAIL: ${{ secrets.TO_EMAIL }}
+        run: python main.py
+
+      - name: Commit state if changed
+        run: |
+          git config user.name "waitlist-bot"
+          git config user.email "waitlist-bot@users.noreply.github.com"
+
+          git add state.txt
+
+          if git diff --cached --quiet; then
+            echo "No state change"
+          else
+            git commit -m "mark alert sent"
+            git push
+          fi

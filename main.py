@@ -7,10 +7,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-# COURSE_URL = "https://classes.berkeley.edu/content/2026-fall-cyplan-101-001-lec-001"
-COURSE_URL = "https://classes.berkeley.edu/content/2026-fall-econ-136-001-lec-001"
-CHECK_EVERY_SECONDS = 300
-already_alerted = False
+COURSE_URL = "https://classes.berkeley.edu/content/2026-fall-cyplan-101-001-lec-001"
 
 def get_page_html():
     with sync_playwright() as p:
@@ -61,19 +58,21 @@ def send_email(waitlisted, waitlist_max, class_title):
         smtp.login(EMAIL_ADDRESS, EMAIL_APP_PASSWORD)
         smtp.send_message(msg)
 
-# while True:
-#     waitlisted, waitlist_max = check_waitlist()
+def already_sent():
+    if not os.path.exists("state.txt"):
+        return False
+    with open("state.txt") as f:
+        return f.read().strip() == "sent"
 
-#     if waitlisted < waitlist_max and not already_alerted:
-#         send_email(waitlisted, waitlist_max)
-#         already_alerted = True
-#         print("Email sent!")
-
-#     if waitlisted >= waitlist_max:
-#         already_alerted = False
-
-#     time.sleep(CHECK_EVERY_SECONDS)
+def mark_sent():
+    with open("state.txt", "w") as f:
+        f.write("sent")
 
 if __name__ == "__main__":
+    if already_sent():
+        exit()
+
     waitlisted, waitlist_max, class_title = check_waitlist()
-    send_email(waitlisted, waitlist_max, class_title)
+    if waitlisted < waitlist_max and not already_sent():
+        send_email(waitlisted, waitlist_max, class_title)
+        mark_sent()
