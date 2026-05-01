@@ -79,9 +79,15 @@ def send_email(class_title, url, waitlisted, waitlist_max):
         smtp.login(EMAIL_ADDRESS, EMAIL_APP_PASSWORD)
         smtp.send_message(msg)
 
+def remove_stale_state_entries(state, courses):
+    valid_urls = {course["url"] for course in courses}
+    return {url: value for url, value in state.items() if url in valid_urls}
+
 if __name__ == "__main__":
     courses = load_courses()
     state = load_state()
+
+    state = remove_stale_state_entries(state, courses)
 
     for course in courses:
         title = course["title"]

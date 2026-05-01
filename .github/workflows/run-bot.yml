@@ -2,6 +2,7 @@ name: Run Waitlist Bot
 
 # sends every 10 min
 on:
+  push:
   schedule:
     - cron: "*/10 * * * *"
   workflow_dispatch:
