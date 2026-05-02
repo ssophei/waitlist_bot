@@ -17,7 +17,7 @@ Use this value for `EMAIL_APP_PASSWORD` in your GitHub secrets.
 
 ### 2. Add Github Secrets
 
-In your GitHub repository, go to: **Settings → Secrets and variables → Actions → New repository secret**
+You must be working in a fork of this repository in order to add your own secrets. Once forked, go to: **Settings → Secrets and variables → Actions → New repository secret**
 
 Add the following secrets:
 
